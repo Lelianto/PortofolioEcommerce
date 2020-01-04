@@ -85,6 +85,10 @@ from blueprints.cart.resources import bp_cart
 app.register_blueprint(bp_cart, url_prefix = '/cart')
 
 # Endpoint untuk CRUD cart
+# from blueprints.cart_detail.resources import bp_cart_detail
+# app.register_blueprint(bp_cart_detail, url_prefix = '/cart_detail')
+
+# Endpoint untuk CRUD cart
 from blueprints.payment.resources import bp_payment
 app.register_blueprint(bp_payment, url_prefix = '/payment')
 

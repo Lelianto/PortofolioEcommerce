@@ -15,7 +15,6 @@ class Payment(db.Model):
     provinsi = db.Column(db.String(255), nullable=False)
     kode_pos = db.Column(db.String(255), nullable=False)
     nomor_telepon = db.Column(db.String(255), nullable=False)
-    jasa_pengiriman = db.Column(db.String(255), nullable=False)
 
     payment_fields = {
         'id': fields.Integer,
@@ -27,16 +26,10 @@ class Payment(db.Model):
         'kota_kabupaten': fields.String,
         'provinsi': fields.String,
         'kode_pos': fields.String,
-        'nomor_telepon': fields.String,
-        'jasa_pengiriman': fields.String
+        'nomor_telepon': fields.String
     }
 
-    # jwt_claim_fields = {
-    #     'id' : fields.String,
-    #     'email': fields.String,
-    # }
-
-    def __init__(self, cart_id, nama_jalan, rt_rw, kelurahan, kecamatan, kota_kabupaten, provinsi, kode_pos, nomor_telepon, jasa_pengiriman):
+    def __init__(self, cart_id, nama_jalan, rt_rw, kelurahan, kecamatan, kota_kabupaten, provinsi, kode_pos, nomor_telepon):
         self.cart_id = cart_id,
         self.nama_jalan = nama_jalan,
         self.rt_rw = rt_rw,
@@ -45,8 +38,7 @@ class Payment(db.Model):
         self.kota_kabupaten = kota_kabupaten,
         self.provinsi = provinsi,
         self.kode_pos = kode_pos,
-        self.nomor_telepon = nomor_telepon,
-        self.jasa_pengiriman = jasa_pengiriman
+        self.nomor_telepon = nomor_telepon
 
-    # def __repr__(self):
-    #     return '<Payment %r>' % self.id
+    def __repr__(self):
+        return '<Payment %r>' % self.id
