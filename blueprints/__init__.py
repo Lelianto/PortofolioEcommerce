@@ -84,13 +84,13 @@ app.register_blueprint(bp_book, url_prefix = '/book')
 from blueprints.cart.resources import bp_cart
 app.register_blueprint(bp_cart, url_prefix = '/cart')
 
-# Endpoint untuk CRUD cart
-# from blueprints.cart_detail.resources import bp_cart_detail
-# app.register_blueprint(bp_cart_detail, url_prefix = '/cart_detail')
-
-# Endpoint untuk CRUD cart
+# Endpoint untuk CRUD payment
 from blueprints.payment.resources import bp_payment
 app.register_blueprint(bp_payment, url_prefix = '/payment')
+
+# Endpoint untuk CRUD payment confirmation
+from blueprints.payment_confirm.resources import bp_payment_confirm
+app.register_blueprint(bp_payment_confirm, url_prefix = '/payment_confirm')
 
 # db.create_all()
 

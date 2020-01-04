@@ -7,6 +7,7 @@ from .model import Payment
 from blueprints import db, app
 from datetime import datetime
 from blueprints.cart.model import Cart
+from blueprints.book.model import Books
 import json
 import requests
 
@@ -21,8 +22,6 @@ import hashlib
 # Creating blueprint
 bp_payment = Blueprint('payment', __name__)
 api = Api(bp_payment)
-
-# class PaymentList(Resource):
     
 
 class Expedition(Resource):
@@ -95,22 +94,7 @@ class TotalBiaya(Resource):
         qry = Cart.query.all()
         total_harga = 0
         for query in qry:
-            if query.status_cart == 1:
-                total = total_harga + query.harga*query.stok
-                total_harga = total
-        
-        qry = Payment.query[-1]
-        biaya_ongkir = qry.ongkir
-
-        total_biaya_user = total_harga + biaya_ongkir
-
-        return total_biaya_user
-
-    def post(self):
-        qry = Cart.query.all()
-        total_harga = 0
-        for query in qry:
-            if query.status_cart == 1:
+            if query.status_cart == 0:
                 total = total_harga + query.harga*query.stok
                 total_harga = total
         

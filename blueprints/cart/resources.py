@@ -108,6 +108,12 @@ class AddToCart(Resource):
 
         cart = Cart(args['status_cart'], claim['id'], args['book_id'], args['judul'], args['penulis'], args['jenis_cover'], args['foto_buku'], args['harga'], args['stok'], args['berat'], args['nama_lengkap'], args['email'])
 
+        qry = Cart.query
+
+        for query in qry:
+            if int(args['book_id']) == int(query.book_id):
+                return {'message':'buku sudah ada di dalam cart'}
+                
         db.session.add(cart)
         db.session.commit()
         app.logger.debug('DEBUG : %s', cart)
