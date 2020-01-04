@@ -49,9 +49,10 @@ class Expedition(Resource):
 
         result = req.json()
 
-        # ongkir = result['rajaongkir']['results'][0]['costs'][1]['cost'][0]['value']
+        ongkir = result['rajaongkir']['results'][0]['costs'][1]['cost'][0]['value']
 
-        return result
+        # Payment.ongkir = ongkir
+        return ongkir
 
     # Post
     @jwt_required
@@ -69,11 +70,7 @@ class Expedition(Resource):
         parser.add_argument('nomor_telepon', location='json', default='None')
         args = parser.parse_args()
 
-        payment = Payment(args['cart_id'],args['nama_jalan'], args['rt_rw'], args['kelurahan'], args['kecamatan'], args['kota_kabupaten'], args['provinsi'], args['kode_pos'], args['nomor_telepon'])
-
         destinasi = args['kota_kabupaten']
-        db.session.add(payment)
-        db.session.commit()
 
         qry = Cart.query.all()
         berat_kg = 0
@@ -84,10 +81,45 @@ class Expedition(Resource):
         
         berat_gram = berat_kg*1000
         ongkir_user = self.GetBiayaPengiriman('Malang', destinasi, berat_gram)
-        print(destinasi)
-        print(berat_gram)
-        app.logger.debug('DEBUG : %s', payment)
 
+        payment = Payment(args['cart_id'],args['nama_jalan'], args['rt_rw'], args['kelurahan'], args['kecamatan'], destinasi, args['provinsi'], args['kode_pos'], args['nomor_telepon'], ongkir_user)
+
+        db.session.add(payment)
+        db.session.commit()
+
+        app.logger.debug('DEBUG : %s', payment)
         return ongkir_user, 200, {'Content-Type' : 'application/json'}
 
+class TotalBiaya(Resource):
+    def get(self):
+        qry = Cart.query.all()
+        total_harga = 0
+        for query in qry:
+            if query.status_cart == 1:
+                total = total_harga + query.harga*query.stok
+                total_harga = total
+        
+        qry = Payment.query[-1]
+        biaya_ongkir = qry.ongkir
+
+        total_biaya_user = total_harga + biaya_ongkir
+
+        return total_biaya_user
+
+    def post(self):
+        qry = Cart.query.all()
+        total_harga = 0
+        for query in qry:
+            if query.status_cart == 1:
+                total = total_harga + query.harga*query.stok
+                total_harga = total
+        
+        qry = Payment.query[-1]
+        biaya_ongkir = qry.ongkir
+
+        total_biaya_user = total_harga + biaya_ongkir
+
+        return total_biaya_user
+
 api.add_resource(Expedition, '/ongkir')
+api.add_resource(TotalBiaya, '/totalbayar')

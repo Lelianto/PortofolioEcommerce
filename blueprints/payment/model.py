@@ -15,6 +15,8 @@ class Payment(db.Model):
     provinsi = db.Column(db.String(255), nullable=False)
     kode_pos = db.Column(db.String(255), nullable=False)
     nomor_telepon = db.Column(db.String(255), nullable=False)
+    ongkir = db.Column(db.Integer, nullable=False)
+ 
 
     payment_fields = {
         'id': fields.Integer,
@@ -26,10 +28,11 @@ class Payment(db.Model):
         'kota_kabupaten': fields.String,
         'provinsi': fields.String,
         'kode_pos': fields.String,
-        'nomor_telepon': fields.String
+        'nomor_telepon': fields.String,
+        'ongkir': fields.Integer
     }
 
-    def __init__(self, cart_id, nama_jalan, rt_rw, kelurahan, kecamatan, kota_kabupaten, provinsi, kode_pos, nomor_telepon):
+    def __init__(self, cart_id, nama_jalan, rt_rw, kelurahan, kecamatan, kota_kabupaten, provinsi, kode_pos, nomor_telepon, ongkir=0):
         self.cart_id = cart_id,
         self.nama_jalan = nama_jalan,
         self.rt_rw = rt_rw,
@@ -39,6 +42,7 @@ class Payment(db.Model):
         self.provinsi = provinsi,
         self.kode_pos = kode_pos,
         self.nomor_telepon = nomor_telepon
+        self.ongkir = ongkir
 
     def __repr__(self):
         return '<Payment %r>' % self.id

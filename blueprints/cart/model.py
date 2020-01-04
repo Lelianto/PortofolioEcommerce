@@ -17,7 +17,7 @@ class Cart(db.Model):
     foto_buku = db.Column(db.String(255), nullable=False)
     harga = db.Column(db.Integer, nullable=False)
     stok = db.Column(db.Integer, nullable=False)
-    berat = db.Column(db.Integer, nullable=False)
+    berat = db.Column(db.Float, nullable=False)
     nama_lengkap = db.Column(db.String(255), nullable = False)
     email = db.Column(db.String(255), nullable = False)
     

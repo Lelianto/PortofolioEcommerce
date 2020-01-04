@@ -99,7 +99,7 @@ class AddToCart(Resource):
         parser.add_argument('foto_buku', location='json', required=True)
         parser.add_argument('harga', type=int, location='json', required=True)
         parser.add_argument('stok', type=int, location='json', required=True, default = 1)
-        parser.add_argument('berat', type=int, location='json', required=True, default = 1)
+        parser.add_argument('berat', type=float, location='json', required=True, default = 1)
         parser.add_argument('nama_lengkap', location='json', required=True)
         parser.add_argument('email', location='json', required=True)
         args = parser.parse_args()
