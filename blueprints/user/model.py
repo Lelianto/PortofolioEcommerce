@@ -1,8 +1,8 @@
-# Import
+# Import beberapa library
 from blueprints import db
 from flask_restful import fields
 
-# Create Model
+# Membuat database dengan nama 'user'
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
@@ -14,6 +14,7 @@ class User(db.Model):
     foto_profil = db.Column(db.String(500))
     genre = db.Column(db.String(1000))
 
+# Membuat fields kolom pada database 'user' 
     user_fields = {
         'id': fields.Integer,
         'nama_lengkap': fields.String,
@@ -30,6 +31,7 @@ class User(db.Model):
         'email': fields.String
     }
 
+# Inisiasi variabel untuk digunakan pada resource USER
     def __init__(self, nama_lengkap, email, kata_sandi, tanggal_lahir, nomor_telepon, foto_profil, genre):
         self.nama_lengkap = nama_lengkap
         self.email = email

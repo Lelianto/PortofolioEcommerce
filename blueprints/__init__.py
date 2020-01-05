@@ -24,7 +24,6 @@ def internal_required(fn):
     def wrapper(*args, **kwargs):
         verify_jwt_in_request()
         claims = get_jwt_claims()
-
         if claims['email'] != 'lian@alterra.id':
             return {'status': 'FORBIDDEN', 'message': 'Internal Only'}, 403
         else:
@@ -32,7 +31,7 @@ def internal_required(fn):
     return wrapper
 
 env = os.environ.get('FLASK_ENV', 'development')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/test_porto' if (env == 'testing') else 'mysql+pymysql://root:@0.0.0.0:3306/porto'  
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/porto_test' if (env == 'testing') else 'mysql+pymysql://root:@0.0.0.0:3306/porto'  
   
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

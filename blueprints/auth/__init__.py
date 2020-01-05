@@ -1,33 +1,31 @@
-# Import
+# Import beberapa library yang dibutuhkan
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
-
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt_claims
 from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt_claims
 from ..user.model import User
-
-# kata_sandi Encription
+# Untuk melakukan enkripsi
 from password_strength import PasswordPolicy
 import hashlib
 
 bp_auth = Blueprint('auth', __name__)
 api = Api(bp_auth)
 
-# Resource
+# Resource class untuk membuat token
 class CreateTokenResource(Resource):
     def get(self):
-        # Create Token
+        # Untuk melakukan login dan pengecekan tipe akun 
         parser = reqparse.RequestParser()
-        parser.add_argument('email', location='args', required=True)
-        parser.add_argument('kata_sandi', location='args', required=True)
+        parser.add_argument('email', location='json', required=True)
+        parser.add_argument('kata_sandi', location='json', required=True)
         args = parser.parse_args()
 
-        # Internal Client
+        # Pengecekan : Apakah termasuk akun internal
         if args['email'] == 'lian@alterra.id' and args['kata_sandi'] == 'l3l11234':
             token = create_access_token(identity = args['email'], user_claims={'email': args['email']})
             return {'token': token}, 200
 
-        # Non-Internal User
+        # Logika yang berjalan jika ternyata yang login adalah user biasa
         else:
             kata_sandi_digest = hashlib.md5(args['kata_sandi'].encode()).hexdigest()
             qry = User.query.filter_by(email = args['email']).filter_by(kata_sandi = kata_sandi_digest)
@@ -45,5 +43,6 @@ class CreateTokenResource(Resource):
         claims = get_jwt_claims()
         claims = marshal(claims, User.jwt_claim_fields)
         return claims, 200
-        
+
+# Endpoint untuk login
 api.add_resource(CreateTokenResource, '')

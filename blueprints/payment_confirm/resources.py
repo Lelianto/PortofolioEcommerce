@@ -1,9 +1,5 @@
-"""
-This call sends a message to one recipient.
-"""
 from mailjet_rest import Client
 import os
-
 
 # Import
 from flask import Blueprint
@@ -24,11 +20,11 @@ import requests
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints import internal_required
 
-# kata_sandi Encription
+# Untuk melakukan enkripsi
 from password_strength import PasswordPolicy
 import hashlib
 
-# Creating blueprint
+# Membuat blueprint
 bp_payment_confirm = Blueprint('payment_confirm', __name__)
 api = Api(bp_payment_confirm)
 
@@ -38,11 +34,13 @@ class TotalBiaya(Resource):
     MAILJET_SECRET_KEY = 'c8f9b62ee7246a4278c5a896a2e9c0fd'
     MAILJET_SEND_API = 'https://api.mailjet.com/v3/send'
 
+    # Triger menekan tombol 'Bayar Sekarang' untuk menuju halaman terakhir
     @jwt_required
     def post(self):
-
         qry = Cart.query.all()
         book_qry = Books.query.all()
+
+        # Mengambil kode pemesanan dari ID cart terakhir yang aktif
         kode_pemesanan = hashlib.md5(str(qry[-1].id).encode()).hexdigest()[-10:].upper()
 
         email = ''
@@ -53,7 +51,6 @@ class TotalBiaya(Resource):
             if query.status_cart == 0:
                 total = total_harga + query.harga*query.stok
                 total_harga = total
-
                 for book in book_qry:
                     if book.status == 'Ready Stock':
                         if query.book_id == book.id:
@@ -62,6 +59,7 @@ class TotalBiaya(Resource):
                             db.session.commit()
                 email = query.email
                 nama_lengkap = query.nama_lengkap
+                # Mengubah status cart menjadi 'sudah dibayar'
                 query.status_cart = True
                 db.session.commit()
         
@@ -70,6 +68,7 @@ class TotalBiaya(Resource):
 
         total_biaya_user = total_harga + biaya_ongkir
 
+        # Mengirim email berisi resi pembayaran ke email user
         mailjet = Client(auth=(self.MAILJET_API_KEY, self.MAILJET_SECRET_KEY), version='v3')
         data = {
                 'FromEmail': "lian@alterra.id",
@@ -81,8 +80,8 @@ class TotalBiaya(Resource):
                         }
                     ],
                 'Subject': "Konfirmasi Pembayaran",
-                'Text-part': "Silakan Konfirmasi Pembayaran Anda!",
-                'Html-part': "<h3>Silakan Konfirmasi Pembayaran Anda!</h3><br />Total Pembayaran = {}".format(total_biaya_user)
+                'Text-part': "Silakan Lakukan Pembayaran Anda!",
+                'Html-part': "<h3>Silakan Lakukan Pembayaran Anda!</h3><br />Total Pembayaran = {}".format(total_biaya_user)
                 }
         result = mailjet.send.create(data=data)
 
@@ -91,10 +90,8 @@ class TotalBiaya(Resource):
         db.session.add(payment_confirm)
         db.session.commit()
 
-
         app.logger.debug('DEBUG : %s', payment_confirm)
+        
         return marshal(payment_confirm, PaymentConfirm.payment_confirm_fields), 200, {'Content-Type' : 'application/json'}
 
 api.add_resource(TotalBiaya, '/bill')
-
-

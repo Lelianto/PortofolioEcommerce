@@ -23,7 +23,6 @@ import hashlib
 bp_payment = Blueprint('payment', __name__)
 api = Api(bp_payment)
     
-
 class Expedition(Resource):
 
     RAJAONGKIR_API_KEY = 'c34f8ffa7ae33fa06c280cf1a0a01589'
@@ -31,6 +30,7 @@ class Expedition(Resource):
     RAJAONGKIR_CITY_API = 'https://api.rajaongkir.com/starter/city'
     DEFAULT_COURIER = 'jne'
 
+    # Mengambil kode kota asal dan kota tujuan
     def GetIdKota(self, kota_kabupaten):
         req_kota = requests.get(self.RAJAONGKIR_CITY_API, params={'key': self.RAJAONGKIR_API_KEY})
         result = req_kota.json()
@@ -40,6 +40,7 @@ class Expedition(Resource):
             if kota['city_name'].lower() == kota_kabupaten.lower():
                 return int(kota['city_id'])
 
+    # Menghitung biaya pengiriman
     def GetBiayaPengiriman(self, kota_asal, kota_tujuan, berat_gram):
         kota_asal_id = self.GetIdKota(kota_asal)
         kota_tujuan_id = self. GetIdKota(kota_tujuan)
@@ -53,7 +54,7 @@ class Expedition(Resource):
         # Payment.ongkir = ongkir
         return ongkir
 
-    # Post
+    # Input User pada halaman konfirmasi alamat pengiriman
     @jwt_required
     def post(self):
 
@@ -77,8 +78,9 @@ class Expedition(Resource):
             if query.status_cart == 1:
                 total = berat_kg + query.berat*query.stok
                 berat_kg = total
-        
         berat_gram = berat_kg*1000
+
+        # Alamat pengirim di set default dari Malang
         ongkir_user = self.GetBiayaPengiriman('Malang', destinasi, berat_gram)
 
         payment = Payment(args['cart_id'],args['nama_jalan'], args['rt_rw'], args['kelurahan'], args['kecamatan'], destinasi, args['provinsi'], args['kode_pos'], args['nomor_telepon'], ongkir_user)
@@ -90,6 +92,7 @@ class Expedition(Resource):
         return ongkir_user, 200, {'Content-Type' : 'application/json'}
 
 class TotalBiaya(Resource):
+    # Untuk menampilkan total biaya pada halaman konfirmasi alamat pengiriman
     def get(self):
         qry = Cart.query.all()
         total_harga = 0
@@ -100,7 +103,6 @@ class TotalBiaya(Resource):
         
         qry = Payment.query[-1]
         biaya_ongkir = qry.ongkir
-
         total_biaya_user = total_harga + biaya_ongkir
 
         return total_biaya_user

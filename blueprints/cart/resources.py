@@ -12,11 +12,11 @@ import json
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints import internal_required
 
-# kata_sandi Encription
+# Untuk melakukan ekripsi
 from password_strength import PasswordPolicy
 import hashlib
 
-# Creating blueprint
+# Membuat blueprint 'cart'
 bp_cart = Blueprint('cart', __name__)
 api = Api(bp_cart)
 
@@ -27,29 +27,39 @@ class CartResource(Resource):
     def options(self, id=None):
         return {"status":"ok"},200
 
+    # Mengambil isi keranjang sesuai ID
     @jwt_required
+    @internal_required
     def get(self, id=None):
         qry = Cart.query.get(id)
         if qry is not None:
           return marshal(qry, Cart.cart_fields), 200, {'Content-Type' : 'application/json'}
         return {'status' : 'NOT_FOUND'}, 404
 
-    # Delete
+    # Delete isi keranjang sesuai ID
     @jwt_required
     def delete(self, id):
-        user = User.query.get(id)
-
-        if user is not None:
+        qry = Cart.query.get(id)
+        if qry is None:
             # Hard Delete
-            db.session.delete(user)
-            db.session.commit()
-            return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
-        return {'status' : 'NOT FOUND'}, 404, {'Content-Type':'application/json'}
+            claim = get_jwt_claims()
+            # Internal dapat menghapus semua cart sesuai ID
+            if claim['email'] == 'lian@alterra.id':
+                db.session.delete(qry)
+                db.session.commit()
+                return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
+            else:
+                # User hanya dapat menghapus cart sendiri
+                if qry and claim['id'] == qry.user_id:
+                    db.session.delete(qry)
+                    db.session.commit()
+                    return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
+                return {'status': 'NOT FOUND'}, 404
+        return {'status' : 'There are no cart with this ID'}, 404, {'Content-Type':'application/json'}
     
-    # Put
+    # Melakukan update jumlah pembelian (stok) yang ditriger dengan menekan sebuah tombol finalisasi produk
     @jwt_required
     def put(self, id):
-        # validasi id gak ngaco
         if int(id) > 0:
             cart = Cart.query.get(id)
             if cart:
@@ -67,6 +77,7 @@ class CartResource(Resource):
         return {'status' : 'BAD REQUEST'}, 400, {'Content-Type':'application/json'}
 
 class TotalPrice(Resource):
+    # Untuk mengambil total harga buku pada cart - pada aplikasi nyatanya menggunakan react atau triger sebuah tombol
     @jwt_required
     def get(self):
         qry = Cart.query.all()
@@ -78,7 +89,7 @@ class TotalPrice(Resource):
         return total_harga
         
 class CartList(Resource):
-    # Get All
+    # Mengambil seluruh isi keranjang - untuk bagian 'bayar sekarang' dan logo 'cart'
     @jwt_required
     def get(self):
         qry = Cart.query.all()
@@ -88,6 +99,7 @@ class CartList(Resource):
         return filter_result
 
 class AddToCart(Resource):
+    # Menambah produk pada 'cart' ketika menekan tombol 'Masukkan Keranjang'
     @jwt_required
     def post(self):
         parser = reqparse.RequestParser()

@@ -4,9 +4,11 @@ from flask_restful import Resource, Api, reqparse, inputs, marshal
 from blueprints import db, app
 from sqlalchemy import desc
 from .model import Books
+from blueprints.user.model import User
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints import internal_required
 
+# Membuat blueprint book
 bp_book = Blueprint('book', __name__)
 api = Api(bp_book)
 
@@ -14,17 +16,17 @@ class BookResource(Resource):
     def __init__(self):
         pass
 
-    ############## GET ALL ##############
+    # Mengambil semua buku termasuk bukunya sendiri pada sebuah halaman
     @jwt_required
     def get(self):
         claim = get_jwt_claims()
 
         parser = reqparse.RequestParser()
-        parser.add_argument('p', location='args', default=1)
-        parser.add_argument('rp', location='args', default=25)
+        parser.add_argument('p', location='json', default=1)
+        parser.add_argument('rp', location='json', default=25)
         args = parser.parse_args()
 
-        # Pagination
+        # Pagination batas hasil pengambilan
         offset = args['rp'] * (args['p'] - 1)
 
         qry = Books.query
@@ -34,7 +36,7 @@ class BookResource(Resource):
             all_books.append(marshal(book,Books.response_fields))
         return all_books, 200
 
-    ############## MENAMBAH ##############
+    # Menambah Buku di dalam database book
     @jwt_required
     def post(self):
         parser = reqparse.RequestParser()
@@ -69,32 +71,38 @@ class BookResource(Resource):
 
 class BookList(Resource):
 
-    ############## GET BY ID ##############
+    # Mengakses Buku sesuai ID sendiri untuk User, sementara Internal dapat mengakses semua ID - Digunakan untuk update oleh user nantinya
     @jwt_required
     def get(self, id=None):
         qry = Books.query.get(id)
         claim = get_jwt_claims()
-        if claim['email'] == 'lian@alterra.id':
-            return marshal(qry, User.user_fields), 
-        else:
-            if qry and int(claim['id']) == int(qry.user_id):
-                return marshal(qry, Books.response_fields), 200
-            return {'status': 'NOT FOUND'}, 404
-    
+        if qry is not None:
+            if claim['email'] == 'lian@alterra.id':
+                return marshal(qry, User.user_fields), 
+            else:
+                # Untuk mengakses buku sendiri - Dapat update, dan delete
+                if qry and int(claim['id']) == int(qry.user_id):
+                    return marshal(qry, Books.response_fields), 200
+                # Untuk mengakses bukuorang lain - Hanya dapat membeli
+                else:
+                    return marshal(qry, Books.response_fields), 200
+        return {'status': 'NOT FOUND'}, 404
+
+    # Melakukan updating data buku sesuai ID oleh User
     @jwt_required
     def put(self, id=None):
         if id is None:
             return {'message': 'Masukkan ID'}, 400, {'Content-Type':'application/json'}
         elif id is not None:
             parser = reqparse.RequestParser()
-            parser.add_argument('judul', location='json', help='judul invalid', default ='None', required=True)
+            parser.add_argument('judul', location='json', default ='None', required=True)
             parser.add_argument('penulis', location='json', help='penulis invalid', default = 'None', required=True)
             parser.add_argument('jumlah_halaman', type=int, location='json', help='jumlah halaman invalid', default=0, required=True)
             parser.add_argument('tanggal_terbit', location='json', help='tanggal terbit invalid', default='none', required=True)
             parser.add_argument('isbn', location='json', help='isbn invalid',default='none', required=True)
             parser.add_argument('genre', location='json', help='genre invalid', default=0, required=True)
             parser.add_argument('bahasa', location='json', help='bahasa invalid', default='none', required=True)
-            parser.add_argument('berat', type=float, location='json', help='berat invalid',default=0)
+            parser.add_argument('berat', type=float, location='json', help='berat invalid',default=0, required=True)
             parser.add_argument('lebar', type=int, location='json', help='lebar invalid', default=0)
             parser.add_argument('panjang', type=int, location='json', help='panjang invalid', default=0)
             parser.add_argument('jenis_cover', location='json', help='jenis cover invalid',default='none', required=True)
@@ -130,24 +138,31 @@ class BookList(Resource):
             qry.stok = args['stok']
 
             db.session.commit()
-            return marshal(qry, Books.response_fields), 200
+            return marshal(qry, Books.response_fields), 200, {'Content-Type':'application/json'}
     
-        ############## DELETE BY ID ##############
+    # Menghapus buku sesuai ID
     @jwt_required
     def delete(self, id=None):
-        parser = reqparse.RequestParser()
-        parser.add_argument('id', location='args', required=True, type=int)
-        args = parser.parse_args()
-        qry = Books.query.get(args['id'])
-        if qry is None:
-            return {'penulis':'NOT_FOUND'}, 404
-
-        db.session.delete(qry)
-        db.session.commit()
-        return 'Deleted', 200
+        qry = Books.query.get(id)
+        if qry is not None:
+            # Hard Delete
+            claim = get_jwt_claims()
+            # Internal dapat menghapus semua buku sesuai ID
+            if claim['email'] == 'lian@alterra.id':
+                db.session.delete(qry)
+                db.session.commit()
+                return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
+            else:
+                # User hanya dapat menghapus bukunya sendiri
+                if qry and int(claim['id']) == int(qry.user_id):
+                    db.session.delete(qry)
+                    db.session.commit()
+                    return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
+                return {'status': 'NOT FOUND'}, 404
+        return {'status' : 'There are no book with this ID'}, 404, {'Content-Type':'application/json'}
 
 class BookOwn(Resource):
-    ############## GET ALL MINE ##############
+    # Untuk mengambil seluruh buku milik user
     @jwt_required
     def get(self):
         claim = get_jwt_claims()
@@ -157,7 +172,7 @@ class BookOwn(Resource):
         parser.add_argument('rp', location='args', default=25)
         args = parser.parse_args()
 
-        # Pagination
+        # Pagination hasil pengambilan
         offset = args['rp'] * (args['p'] - 1)
 
         qry = Books.query
@@ -169,6 +184,7 @@ class BookOwn(Resource):
         return user_book, 200
 
 class BookSearch(Resource):
+    # Fitur pencarian sesuai dengan keyword (judul atau penulis)
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('p', location='args', default=1)
@@ -188,6 +204,7 @@ class BookSearch(Resource):
         return {'status': 'NOT FOUND'}, 404
 
 class BookCategory(Resource):
+    # Pencarian Buku sesuai genre
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('p', location='args', default=1)
@@ -210,4 +227,4 @@ api.add_resource(BookOwn, '/mine')
 api.add_resource(BookCategory, '/category')
 api.add_resource(BookSearch, '/search')
 api.add_resource(BookResource, '')
-api.add_resource(BookList, '/<id>')
+api.add_resource(BookList, '/edit/<id>')

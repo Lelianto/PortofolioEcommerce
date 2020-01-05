@@ -4,7 +4,7 @@ from flask_restful import fields
 from blueprints.user.model import User
 from blueprints.book.model import Books
 
-# Create Model
+# Membuat Model keranjang dengan nama tabel 'cart'
 class Cart(db.Model):
     __tablename__ = 'cart'
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
@@ -37,6 +37,7 @@ class Cart(db.Model):
         'email' : fields.String
     }
 
+# Melakukan inisiasi variabel yang akan digunakan di resource
     def __init__(self, status_cart, user_id, book_id, judul, penulis, jenis_cover, foto_buku, harga, stok, berat, nama_lengkap, email):
         self.status_cart = status_cart
         self.user_id = user_id

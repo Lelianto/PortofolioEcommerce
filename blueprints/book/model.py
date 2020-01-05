@@ -1,8 +1,10 @@
 from datetime import datetime 
 from blueprints import db 
 from flask_restful import fields
+# Import tabel User untuk mengambil id user sebagai foreign key
 from blueprints.user.model import User
 
+# Membuat Model tabel Buku dengan nama 'book' 
 class Books(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -40,11 +42,12 @@ class Books(db.Model):
         'jenis_cover' : fields.String,
         'status' : fields.String,
         'foto_buku' : fields.String,
-        'sinopsis' : fields.Integer,
+        'sinopsis' : fields.String,
         'harga' : fields.Integer,
         'stok' : fields.Integer
     }
 
+# Melakukan inisiasi variabel yang akan digunakan di resource
     def __init__(self, user_id, judul, penulis, jumlah_halaman, tanggal_terbit, isbn, genre, bahasa, berat, lebar, panjang, jenis_cover, status, foto_buku, sinopsis, harga, stok):
         self.user_id = user_id
         self.judul = judul

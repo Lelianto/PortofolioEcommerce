@@ -2,7 +2,7 @@
 from blueprints import db
 from flask_restful import fields
 
-# Create Model
+# Membuat Model Payment dengan nama tabel 'payment'
 class Payment(db.Model):
     __tablename__ = 'payment'
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
@@ -17,7 +17,6 @@ class Payment(db.Model):
     nomor_telepon = db.Column(db.String(255), nullable=False)
     ongkir = db.Column(db.Integer, nullable=False)
  
-
     payment_fields = {
         'id': fields.Integer,
         'cart_id': fields.Integer,
@@ -32,6 +31,7 @@ class Payment(db.Model):
         'ongkir': fields.Integer
     }
 
+# Melakukan inisiasi variabel untuk digunakan pada resource
     def __init__(self, cart_id, nama_jalan, rt_rw, kelurahan, kecamatan, kota_kabupaten, provinsi, kode_pos, nomor_telepon, ongkir=0):
         self.cart_id = cart_id,
         self.nama_jalan = nama_jalan,
