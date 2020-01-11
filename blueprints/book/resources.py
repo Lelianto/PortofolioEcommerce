@@ -16,6 +16,9 @@ class BookResource(Resource):
     def __init__(self):
         pass
 
+    def options(self, id=None):
+        return {'status':'ok'},200
+
     # Mengambil semua buku termasuk bukunya sendiri pada sebuah halaman
     @jwt_required
     def get(self):
