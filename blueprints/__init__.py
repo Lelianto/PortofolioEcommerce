@@ -5,12 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt_claims
-
+from flask_cors import CORS
 # Others
 from datetime import timedelta
 from functools import wraps
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['APP_DEBUG'] = True
 

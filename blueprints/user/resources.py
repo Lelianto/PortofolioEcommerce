@@ -82,6 +82,10 @@ class UserResource(Resource):
 
 class UserList(Resource):
     # Menampilkan seluruh user - hanya dapat dilakukan oleh Internal
+
+    def options(self, id=None):
+        return {'status':'ok'},200
+        
     @jwt_required
     @internal_required
     def get(self):

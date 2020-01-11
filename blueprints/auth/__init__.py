@@ -13,7 +13,11 @@ api = Api(bp_auth)
 
 # Resource class untuk membuat token
 class CreateTokenResource(Resource):
-    def get(self):
+    def options(self, id=None):
+        return {'status':'ok'},200
+
+    def post(self):
+
         # Untuk melakukan login dan pengecekan tipe akun 
         parser = reqparse.RequestParser()
         parser.add_argument('email', location='json', required=True)
@@ -36,6 +40,9 @@ class CreateTokenResource(Resource):
                 return {'token': token}, 200
             return {'status': 'BAD REQUEST', 'message': 'invalid email or kata_sandi'}, 400
 
+class JwtToken(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Show the payload
     @jwt_required
     def post(self):
