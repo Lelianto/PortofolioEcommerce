@@ -77,6 +77,8 @@ class CartResource(Resource):
         return {'status' : 'BAD REQUEST'}, 400, {'Content-Type':'application/json'}
 
 class TotalPrice(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Untuk mengambil total harga buku pada cart - pada aplikasi nyatanya menggunakan react atau triger sebuah tombol
     @jwt_required
     def get(self):
@@ -89,6 +91,8 @@ class TotalPrice(Resource):
         return total_harga
         
 class CartList(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Mengambil seluruh isi keranjang - untuk bagian 'bayar sekarang' dan logo 'cart'
     @jwt_required
     def get(self):
@@ -99,11 +103,13 @@ class CartList(Resource):
         return filter_result
 
 class AddToCart(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Menambah produk pada 'cart' ketika menekan tombol 'Masukkan Keranjang'
     @jwt_required
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('status_cart', type=bool, location='json', required=True, default=False)
+        parser.add_argument('status_cart', type=bool, location='json', default=False)
         parser.add_argument('book_id', location='json', required=True)
         parser.add_argument('judul', location='json', required=True)
         parser.add_argument('penulis', location='json', required=True)
@@ -112,18 +118,17 @@ class AddToCart(Resource):
         parser.add_argument('harga', type=int, location='json', required=True)
         parser.add_argument('stok', type=int, location='json', required=True, default = 1)
         parser.add_argument('berat', type=float, location='json', required=True, default = 1)
-        parser.add_argument('nama_lengkap', location='json', required=True)
-        parser.add_argument('email', location='json', required=True)
+        parser.add_argument('status_jual', location='json', default='Ready Stock')
         args = parser.parse_args()
 
         claim = get_jwt_claims()
 
-        cart = Cart(args['status_cart'], claim['id'], args['book_id'], args['judul'], args['penulis'], args['jenis_cover'], args['foto_buku'], args['harga'], args['stok'], args['berat'], args['nama_lengkap'], args['email'])
+        cart = Cart(args['status_cart'], claim['id'], args['book_id'], args['judul'], args['penulis'], args['jenis_cover'], args['foto_buku'], args['harga'], args['stok'], args['berat'], args['status_jual'], claim['email'])
 
         qry = Cart.query
 
         for query in qry:
-            if int(args['book_id']) == int(query.book_id):
+            if claim['email'] == query.email and int(args['book_id']) == int(query.book_id) and query.status_cart is False:
                 return {'message':'buku sudah ada di dalam cart'}
                 
         db.session.add(cart)
@@ -132,7 +137,7 @@ class AddToCart(Resource):
 
         return marshal(cart, Cart.cart_fields), 200, {'Content-Type' : 'application/json'}
 
-api.add_resource(TotalPrice,'/Total')
-api.add_resource(AddToCart,'/Add')
-api.add_resource(CartList, '/AllCart')
+api.add_resource(TotalPrice,'/total')
+api.add_resource(AddToCart,'/add')
+api.add_resource(CartList, '/allcart')
 api.add_resource(CartResource, '/<id>')

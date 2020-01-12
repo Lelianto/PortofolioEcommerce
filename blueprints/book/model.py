@@ -26,6 +26,7 @@ class Books(db.Model):
     harga = db.Column(db.Integer, nullable=False)
     stok = db.Column(db.Integer, nullable=False)
     penerbit = db.Column(db.String(10000), nullable=False)
+    email_user = db.Column(db.String(255), nullable=False)
 
     response_fields = {
         'id' : fields.Integer,
@@ -46,11 +47,12 @@ class Books(db.Model):
         'sinopsis' : fields.String,
         'harga' : fields.Integer,
         'stok' : fields.Integer,
-        'penerbit' : fields.String
+        'penerbit' : fields.String,
+        'email_user' : fields.String
     }
 
 # Melakukan inisiasi variabel yang akan digunakan di resource
-    def __init__(self, user_id, judul, penulis, jumlah_halaman, tanggal_terbit, isbn, genre, bahasa, berat, lebar, panjang, jenis_cover, status, foto_buku, sinopsis, harga, stok, penerbit):
+    def __init__(self, user_id, judul, penulis, jumlah_halaman, tanggal_terbit, isbn, genre, bahasa, berat, lebar, panjang, jenis_cover, status, foto_buku, sinopsis, harga, stok, penerbit, email_user):
         self.user_id = user_id
         self.judul = judul
         self.penulis = penulis
@@ -69,6 +71,7 @@ class Books(db.Model):
         self.harga = harga
         self.stok = stok
         self.penerbit = penerbit
+        self.email_user = email_user
 
     def __repr__(self):
         return '<Book %r' % self.id

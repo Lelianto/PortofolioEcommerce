@@ -8,7 +8,7 @@ from blueprints.book.model import Books
 class Cart(db.Model):
     __tablename__ = 'cart'
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    status_cart = db.Column(db.Boolean, nullable=False, default=False)
+    status_cart = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
     judul = db.Column(db.String(255), nullable=False)
@@ -18,7 +18,7 @@ class Cart(db.Model):
     harga = db.Column(db.Integer, nullable=False)
     stok = db.Column(db.Integer, nullable=False)
     berat = db.Column(db.Float, nullable=False)
-    nama_lengkap = db.Column(db.String(255), nullable = False)
+    status_jual = db.Column(db.String(255), nullable = False)
     email = db.Column(db.String(255), nullable = False)
     
     cart_fields = {
@@ -33,12 +33,12 @@ class Cart(db.Model):
         'harga' : fields.Integer,
         'stok' : fields.Integer,
         'berat' : fields.Integer,
-        'nama_lengkap' : fields.String,
+        'status_jual' : fields.String,
         'email' : fields.String
     }
 
 # Melakukan inisiasi variabel yang akan digunakan di resource
-    def __init__(self, status_cart, user_id, book_id, judul, penulis, jenis_cover, foto_buku, harga, stok, berat, nama_lengkap, email):
+    def __init__(self, status_cart, user_id, book_id, judul, penulis, jenis_cover, foto_buku, harga, stok, berat, status_jual, email):
         self.status_cart = status_cart
         self.user_id = user_id
         self.book_id = book_id
@@ -49,7 +49,7 @@ class Cart(db.Model):
         self.harga = harga
         self.stok = stok
         self.berat = berat
-        self.nama_lengkap = nama_lengkap
+        self.status_jual = status_jual
         self.email = email
 
     def __repr__(self):

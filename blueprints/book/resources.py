@@ -59,12 +59,12 @@ class BookResource(Resource):
         parser.add_argument('sinopsis', location='json', help='sinopsis invalid', default=0)
         parser.add_argument('harga', type=int, location='json', help='harga invalid',default=0, required=True)
         parser.add_argument('stok', type=int, location='json', help='stok invalid', default=0, required=True)
-        args = parser.parse_args()
         parser.add_argument('penerbit', location='json', help='penerbit invalid',default='none', required=True)
+        args = parser.parse_args()
 
         claim = get_jwt_claims()
         #Books = nama kelas di __init__.py
-        book = Books(claim['id'], args['judul'],args['penulis'],args['jumlah_halaman'],args['tanggal_terbit'],args['isbn'],args['genre'],args['bahasa'],args['berat'],args['lebar'],args['panjang'],args['jenis_cover'],args['status'],args['foto_buku'],args['sinopsis'],args['harga'],args['stok'], args['penerbit'])
+        book = Books(claim['id'], args['judul'],args['penulis'],args['jumlah_halaman'],args['tanggal_terbit'],args['isbn'],args['genre'],args['bahasa'],args['berat'],args['lebar'],args['panjang'],args['jenis_cover'],args['status'],args['foto_buku'],args['sinopsis'],args['harga'],args['stok'], args['penerbit'], claim['email'])
     
         db.session.add(book)
         db.session.commit()
@@ -145,6 +145,7 @@ class BookList(Resource):
             qry.harga = args['harga']
             qry.stok = args['stok']
             qry.penerbit = args['penerbit']
+            qry.email = args['email']
 
             db.session.commit()
             return marshal(qry, Books.response_fields), 200, {'Content-Type':'application/json'}
