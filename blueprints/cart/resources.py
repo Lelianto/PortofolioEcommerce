@@ -85,7 +85,7 @@ class TotalPrice(Resource):
         qry = Cart.query.all()
         total_harga = 0
         for query in qry:
-            if query.status_cart == 1:
+            if query.status_cart == 0:
                 total = total_harga + query.harga*query.stok
                 total_harga = total
         return total_harga
@@ -140,4 +140,4 @@ class AddToCart(Resource):
 api.add_resource(TotalPrice,'/total')
 api.add_resource(AddToCart,'/add')
 api.add_resource(CartList, '/allcart')
-api.add_resource(CartResource, '/<id>')
+api.add_resource(CartResource, 'product/<id>')
