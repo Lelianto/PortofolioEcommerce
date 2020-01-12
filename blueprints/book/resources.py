@@ -50,9 +50,9 @@ class BookResource(Resource):
         parser.add_argument('isbn', location='json', help='isbn invalid',default='none', required=True)
         parser.add_argument('genre', location='json', help='genre invalid', default=0, required=True)
         parser.add_argument('bahasa', location='json', help='bahasa invalid', default='none', required=True)
-        parser.add_argument('berat', type=int, location='json', help='berat invalid',default=0)
-        parser.add_argument('lebar', type=int, location='json', help='lebar invalid', default=0)
-        parser.add_argument('panjang', type=int, location='json', help='panjang invalid', default=0)
+        parser.add_argument('berat', type=float, location='json', help='berat invalid',default=0)
+        parser.add_argument('lebar', type=float, location='json', help='lebar invalid', default=0)
+        parser.add_argument('panjang', type=float, location='json', help='panjang invalid', default=0)
         parser.add_argument('jenis_cover', location='json', help='jenis cover invalid',default='none', required=True)
         parser.add_argument('status', location='json', help='status invalid', default=0, required=True) 
         parser.add_argument('foto_buku', location='json', help='link foto buku invalid',default='none', required=True)
@@ -73,6 +73,8 @@ class BookResource(Resource):
         return marshal(book, Books.response_fields), 200, {'Content-Type':'application/json'}
 
 class BookList(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
 
     # Mengakses Buku sesuai ID sendiri untuk User, sementara Internal dapat mengakses semua ID - Digunakan untuk update oleh user nantinya
     @jwt_required
@@ -88,7 +90,8 @@ class BookList(Resource):
                     return marshal(qry, Books.response_fields), 200
                 # Untuk mengakses bukuorang lain - Hanya dapat membeli
                 else:
-                    return marshal(qry, Books.response_fields), 200
+                    return {'status': 'NOT FOUND'}
+                    # return marshal(qry, Books.response_fields), 200
         return {'status': 'NOT FOUND'}, 404
 
     # Melakukan updating data buku sesuai ID oleh User

@@ -17,8 +17,8 @@ class Books(db.Model):
     genre = db.Column(db.String(255), nullable=False)
     bahasa = db.Column(db.String(255), nullable=False)
     berat = db.Column(db.Float, nullable=False)
-    lebar = db.Column(db.Integer, nullable=False)
-    panjang = db.Column(db.Integer, nullable=False)
+    lebar = db.Column(db.Float, nullable=False)
+    panjang = db.Column(db.Float, nullable=False)
     jenis_cover = db.Column(db.String(255), nullable=False)
     status = db.Column(db.String(255), nullable=False)
     foto_buku = db.Column(db.String(255), nullable=False)
@@ -37,8 +37,8 @@ class Books(db.Model):
         'genre' : fields.String,
         'bahasa' : fields.String,
         'berat' : fields.Float,
-        'lebar' : fields.Integer,
-        'panjang' : fields.Integer,
+        'lebar' : fields.Float,
+        'panjang' : fields.Float,
         'jenis_cover' : fields.String,
         'status' : fields.String,
         'foto_buku' : fields.String,
