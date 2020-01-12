@@ -60,10 +60,11 @@ class BookResource(Resource):
         parser.add_argument('harga', type=int, location='json', help='harga invalid',default=0, required=True)
         parser.add_argument('stok', type=int, location='json', help='stok invalid', default=0, required=True)
         args = parser.parse_args()
+        parser.add_argument('penerbit', location='json', help='penerbit invalid',default='none', required=True)
 
         claim = get_jwt_claims()
         #Books = nama kelas di __init__.py
-        book = Books(claim['id'], args['judul'],args['penulis'],args['jumlah_halaman'],args['tanggal_terbit'],args['isbn'],args['genre'],args['bahasa'],args['berat'],args['lebar'],args['panjang'],args['jenis_cover'],args['status'],args['foto_buku'],args['sinopsis'],args['harga'],args['stok'])
+        book = Books(claim['id'], args['judul'],args['penulis'],args['jumlah_halaman'],args['tanggal_terbit'],args['isbn'],args['genre'],args['bahasa'],args['berat'],args['lebar'],args['panjang'],args['jenis_cover'],args['status'],args['foto_buku'],args['sinopsis'],args['harga'],args['stok'], args['penerbit'])
     
         db.session.add(book)
         db.session.commit()
@@ -90,8 +91,8 @@ class BookList(Resource):
                     return marshal(qry, Books.response_fields), 200
                 # Untuk mengakses bukuorang lain - Hanya dapat membeli
                 else:
-                    return {'status': 'NOT FOUND'}
-                    # return marshal(qry, Books.response_fields), 200
+                    # return {'status': 'NOT FOUND'}
+                    return marshal(qry, Books.response_fields), 200
         return {'status': 'NOT FOUND'}, 404
 
     # Melakukan updating data buku sesuai ID oleh User
@@ -117,6 +118,7 @@ class BookList(Resource):
             parser.add_argument('sinopsis', location='json', help='sinopsis invalid', default=0, required=True)
             parser.add_argument('harga', type=int, location='json', help='harga invalid',default=0, required=True)
             parser.add_argument('stok', type=int, location='json', help='stok invalid', default=0, required=True)
+            parser.add_argument('penerbit', location='json', help='penerbit invalid', default=0, required=True)
             args = parser.parse_args()
 
             qry = Books.query.get(id)
@@ -142,6 +144,7 @@ class BookList(Resource):
             qry.sinopsis = args['sinopsis']
             qry.harga = args['harga']
             qry.stok = args['stok']
+            qry.penerbit = args['penerbit']
 
             db.session.commit()
             return marshal(qry, Books.response_fields), 200, {'Content-Type':'application/json'}

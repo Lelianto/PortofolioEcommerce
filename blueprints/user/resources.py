@@ -19,6 +19,9 @@ bp_user = Blueprint('user', __name__)
 api = Api(bp_user)
 
 class UserResource(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
+        
     # Untuk menampilkan isi profil user sesuai ID user (hanya miliknya sendiir)
     # Untuk menampilkan seluruh profil pada seluruh ID (jika internal)
     @jwt_required
