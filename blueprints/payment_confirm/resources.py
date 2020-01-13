@@ -87,7 +87,7 @@ class TotalBiaya(Resource):
                     ],
                 'Subject': "Konfirmasi Pembayaran",
                 'Text-part': "Silakan Lakukan Pembayaran Anda!",
-                'Html-part': "<h3>Silakan Lakukan Pembayaran Anda!</h3><br />Total Pembayaran = {}".format(total_biaya_user)
+                'Html-part': "<h3>Silakan Lakukan Pembayaran Anda!</h3><br />Total Pembayaran = {}<br />Dengan Kode Pemesanan = {}".format(total_biaya_user, kode_pemesanan)
                 }
         result = mailjet.send.create(data=data)
 

@@ -40,16 +40,5 @@ class CreateTokenResource(Resource):
                 return {'token': token}, 200
             return {'status': 'BAD REQUEST', 'message': 'invalid email or kata_sandi'}, 400
 
-# class JwtToken(Resource):
-#     def options(self, id=None):
-#         return {'status':'ok'},200
-#     # Show the payload
-#     @jwt_required
-#     def post(self):
-#         verify_jwt_in_request()
-#         claims = get_jwt_claims()
-#         claims = marshal(claims, User.jwt_claim_fields)
-#         return claims, 200
-
 # Endpoint untuk login
 api.add_resource(CreateTokenResource, '')
