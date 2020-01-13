@@ -172,6 +172,8 @@ class BookList(Resource):
         return {'status' : 'There are no book with this ID'}, 404, {'Content-Type':'application/json'}
 
 class BookOwn(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Untuk mengambil seluruh buku milik user
     @jwt_required
     def get(self):
@@ -194,6 +196,8 @@ class BookOwn(Resource):
         return user_book, 200
 
 class BookSearch(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Fitur pencarian sesuai dengan keyword (judul atau penulis)
     def get(self):
         parser = reqparse.RequestParser()
@@ -214,6 +218,8 @@ class BookSearch(Resource):
         return {'status': 'NOT FOUND'}, 404
 
 class BookCategory(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Pencarian Buku sesuai genre
     def get(self):
         parser = reqparse.RequestParser()

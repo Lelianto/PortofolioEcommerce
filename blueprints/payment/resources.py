@@ -24,6 +24,8 @@ bp_payment = Blueprint('payment', __name__)
 api = Api(bp_payment)
     
 class Expedition(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
 
     RAJAONGKIR_API_KEY = 'c34f8ffa7ae33fa06c280cf1a0a01589'
     RAJAONGKIR_COST_API = 'https://api.rajaongkir.com/starter/cost'
@@ -49,7 +51,7 @@ class Expedition(Resource):
 
         result = req.json()
 
-        ongkir = result['rajaongkir']['results'][0]['costs'][1]['cost'][0]['value']
+        ongkir = result['rajaongkir']['results'][0]['costs'][0]['cost'][0]['value']
 
         # Payment.ongkir = ongkir
         return ongkir
@@ -92,6 +94,8 @@ class Expedition(Resource):
         return ongkir_user, 200, {'Content-Type' : 'application/json'}
 
 class TotalBiaya(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
     # Untuk menampilkan total biaya pada halaman konfirmasi alamat pengiriman
     def get(self):
         qry = Cart.query.all()
