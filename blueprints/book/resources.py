@@ -84,7 +84,7 @@ class BookList(Resource):
         claim = get_jwt_claims()
         if qry is not None:
             if claim['email'] == 'lian@alterra.id':
-                return marshal(qry, User.user_fields), 
+                return marshal(qry, Books.response_fields), 
             else:
                 # Untuk mengakses buku sendiri - Dapat update, dan delete
                 if qry and int(claim['id']) == int(qry.user_id):
