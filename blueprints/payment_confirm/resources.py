@@ -29,6 +29,8 @@ bp_payment_confirm = Blueprint('payment_confirm', __name__)
 api = Api(bp_payment_confirm)
 
 class TotalBiaya(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
 
     MAILJET_API_KEY = '65c4b0e54802eadb7ff21baa5058ddfa'
     MAILJET_SECRET_KEY = 'c8f9b62ee7246a4278c5a896a2e9c0fd'
@@ -39,15 +41,19 @@ class TotalBiaya(Resource):
     def post(self):
         qry = Cart.query.all()
         book_qry = Books.query.all()
-
+        list_barang = []
+        claim = get_jwt_claims()
+        for query in qry:
+            if claim['email'] == query.email and query.status_cart is False:
+                list_barang.append(query)
         # Mengambil kode pemesanan dari ID cart terakhir yang aktif
         kode_pemesanan = hashlib.md5(str(qry[-1].id).encode()).hexdigest()[-10:].upper()
 
         email = ''
-        nama_lengkap = ''
+        emailuser = ''
 
         total_harga = 0
-        for query in qry:
+        for query in list_barang:
             if query.status_cart == 0:
                 total = total_harga + query.harga*query.stok
                 total_harga = total
@@ -58,7 +64,7 @@ class TotalBiaya(Resource):
                             book.stok = remaining
                             db.session.commit()
                 email = query.email
-                nama_lengkap = query.nama_lengkap
+                emailuser = query.email
                 # Mengubah status cart menjadi 'sudah dibayar'
                 query.status_cart = True
                 db.session.commit()
@@ -76,7 +82,7 @@ class TotalBiaya(Resource):
                 'Recipients': [
                         {
                         "Email": "{}".format(email),
-                        "Name": "{}".format(nama_lengkap)
+                        "Name": "{}".format(emailuser)
                         }
                     ],
                 'Subject': "Konfirmasi Pembayaran",
