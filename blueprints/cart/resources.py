@@ -83,8 +83,13 @@ class TotalPrice(Resource):
     @jwt_required
     def get(self):
         qry = Cart.query.all()
-        total_harga = 0
+        list_barang = []
+        claim = get_jwt_claims()
         for query in qry:
+            if claim['email'] == query.email and query.status_cart is False:
+                list_barang.append(query)
+        total_harga = 0
+        for query in list_barang:
             if query.status_cart == 0:
                 total = total_harga + query.harga*query.stok
                 total_harga = total
