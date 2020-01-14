@@ -100,4 +100,16 @@ class TotalBiaya(Resource):
         
         return marshal(payment_confirm, PaymentConfirm.payment_confirm_fields), 200, {'Content-Type' : 'application/json'}
 
+class SemuaTransaksi(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
+    @jwt_required
+    def get(self):
+        qry = PaymentConfirm.query.all()
+        filter_result = []
+        for query in qry:
+            filter_result.append(marshal(query, PaymentConfirm.payment_confirm_fields))
+        return filter_result
+
 api.add_resource(TotalBiaya, '/bill')
+api.add_resource(SemuaTransaksi, '/all')

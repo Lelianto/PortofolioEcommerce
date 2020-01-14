@@ -31,7 +31,7 @@ class UserResource(Resource):
         if claim['email'] == 'lian@alterra.id':
             return marshal(qry, User.user_fields), 
         else:
-            if qry and claim['id'] == id:
+            if qry and int(claim['id'] == id):
                 return marshal(qry, User.user_fields), 200
             return {'status': 'NOT FOUND'}, 404
 
@@ -76,7 +76,7 @@ class UserResource(Resource):
                 return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
             else:
                 # User hanya dapat menghapus dirinya sendiri - pada aplikasi nyata, token akan dihapus dari setiap page
-                if user and claim['id'] == id:
+                if user and int(claim['id']) == int(id):
                     db.session.delete(user)
                     db.session.commit()
                     return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
@@ -141,5 +141,17 @@ class UserList(Resource):
 
             return marshal(user, User.user_fields), 200, {'Content-Type':'application/json'}
 
+class UserProfile(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
+        
+    # Untuk menampilkan isi profil user
+    @jwt_required
+    def get(self):
+        claim = get_jwt_claims()
+        result = User.query.get(claim['id'])
+        return marshal(result, User.user_fields)
+
 api.add_resource(UserList, '')
+api.add_resource(UserProfile,'/profile')
 api.add_resource(UserResource, '/<id>')
