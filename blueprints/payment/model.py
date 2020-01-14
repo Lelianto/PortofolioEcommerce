@@ -6,7 +6,7 @@ from flask_restful import fields
 class Payment(db.Model):
     __tablename__ = 'payment'
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    cart_id = db.Column(db.Integer, db.ForeignKey('cart.id'))
+    cart_id = db.Column(db.Integer, db.ForeignKey('cart.id', ondelete='CASCADE'))
     nama_jalan = db.Column(db.String(255), nullable=False)
     rt_rw = db.Column(db.String(255), nullable=False)
     kelurahan = db.Column(db.String(255), nullable=False)

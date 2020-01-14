@@ -8,7 +8,7 @@ from blueprints.user.model import User
 class Books(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     judul = db.Column(db.String(255), nullable=False)
     penulis = db.Column(db.String(255), nullable=False)
     jumlah_halaman = db.Column(db.Integer, nullable=False)

@@ -9,8 +9,8 @@ class Cart(db.Model):
     __tablename__ = 'cart'
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     status_cart = db.Column(db.Boolean, default=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete='CASCADE'))
     judul = db.Column(db.String(255), nullable=False)
     penulis = db.Column(db.String(255), nullable=False)
     jenis_cover = db.Column(db.String(255), nullable=False)

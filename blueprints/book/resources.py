@@ -154,6 +154,7 @@ class BookList(Resource):
     @jwt_required
     def delete(self, id=None):
         qry = Books.query.get(id)
+        print('isi qry', qry)
         if qry is not None:
             # Hard Delete
             claim = get_jwt_claims()
