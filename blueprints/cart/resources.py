@@ -40,7 +40,7 @@ class CartResource(Resource):
     @jwt_required
     def delete(self, id):
         qry = Cart.query.get(id)
-        if qry is None:
+        if qry is not None:
             # Hard Delete
             claim = get_jwt_claims()
             # Internal dapat menghapus semua cart sesuai ID
@@ -50,7 +50,7 @@ class CartResource(Resource):
                 return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
             else:
                 # User hanya dapat menghapus cart sendiri
-                if qry and claim['id'] == qry.user_id:
+                if qry and int(claim['id']) == int(qry.user_id):
                     db.session.delete(qry)
                     db.session.commit()
                     return {'status': 'DELETED'}, 200, {'Content-Type':'application/json'}
@@ -145,4 +145,4 @@ class AddToCart(Resource):
 api.add_resource(TotalPrice,'/total')
 api.add_resource(AddToCart,'/add')
 api.add_resource(CartList, '/allcart')
-api.add_resource(CartResource, 'product/<id>')
+api.add_resource(CartResource, '/product/<id>')
