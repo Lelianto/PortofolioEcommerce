@@ -93,23 +93,4 @@ class Expedition(Resource):
         app.logger.debug('DEBUG : %s', payment)
         return ongkir_user, 200, {'Content-Type' : 'application/json'}
 
-class TotalBiaya(Resource):
-    def options(self, id=None):
-        return {'status':'ok'},200
-    # Untuk menampilkan total biaya pada halaman konfirmasi alamat pengiriman
-    def get(self):
-        qry = Cart.query.all()
-        total_harga = 0
-        for query in qry:
-            if query.status_cart == 0:
-                total = total_harga + query.harga*query.stok
-                total_harga = total
-        
-        qry = Payment.query[-1]
-        biaya_ongkir = qry.ongkir
-        total_biaya_user = total_harga + biaya_ongkir
-
-        return total_biaya_user
-
 api.add_resource(Expedition, '/ongkir')
-api.add_resource(TotalBiaya, '/totalbayar')
