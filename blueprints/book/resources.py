@@ -20,7 +20,6 @@ class BookResource(Resource):
         return {'status':'ok'},200
 
     # Mengambil semua buku termasuk bukunya sendiri pada sebuah halaman
-    @jwt_required
     def get(self):
         claim = get_jwt_claims()
 
