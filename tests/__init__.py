@@ -50,7 +50,7 @@ def create_token(isInternal):
     if token is None:
         # Do Request
         req = call_client(request)
-        res = req.get('/token', json = data, content_type='application/json')
+        res = req.post('/token', json = data, content_type='application/json')
 
         # Store Response
         res_json = json.loads(res.data)

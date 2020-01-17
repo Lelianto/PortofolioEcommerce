@@ -27,7 +27,7 @@ class TestUser():
             "kata_sandi": "123454321"
         }
 
-        res = client.get('/token', json = data)
+        res = client.post('/token', json = data)
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
@@ -38,7 +38,7 @@ class TestUser():
             "kata_sandi": "l3l11234"
         }
 
-        res = client.get('/token', json = data)
+        res = client.post('/token', json = data)
         res_json = json.loads(res.data)
 
         assert res.status_code == 200

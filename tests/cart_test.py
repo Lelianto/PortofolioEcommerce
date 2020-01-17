@@ -3,7 +3,7 @@ from . import app, client, cache, create_token, db_reset
 
 class TestCart():
     # Test Case Create Token 
-    db_reset()
+    # db_reset()
     def test_post_new_cart(self, client):
         token = create_token(False)
 
@@ -21,7 +21,7 @@ class TestCart():
             "email":"lelianto.eko@gmail.com"
         }
 
-        res = client.post('/cart/Add', json = data, headers={'Authorization': 'Bearer ' + token})
+        res = client.post('/cart/add', json = data, headers={'Authorization': 'Bearer ' + token})
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
@@ -43,7 +43,7 @@ class TestCart():
             "email":"lelianto.eko@gmail.com"
         }
 
-        res = client.post('/cart/Add', json = data, headers={'Authorization': 'Bearer ' + token})
+        res = client.post('/cart/add', json = data, headers={'Authorization': 'Bearer ' + token})
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
@@ -55,7 +55,7 @@ class TestCart():
             "stok": 7
         }
 
-        res = client.put('/cart/1', json = data, headers={'Authorization': 'Bearer ' + token})
+        res = client.put('/cart/product/1', json = data, headers={'Authorization': 'Bearer ' + token})
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
@@ -63,6 +63,6 @@ class TestCart():
     def test_get_all_cart(self, client):
         token = create_token(False)
 
-        res = client.get('/cart/Total', headers={'Authorization': 'Bearer ' + token})
+        res = client.get('/cart/total', headers={'Authorization': 'Bearer ' + token})
 
         assert res.status_code == 200

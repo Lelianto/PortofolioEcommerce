@@ -144,7 +144,7 @@ class BookList(Resource):
             qry.harga = args['harga']
             qry.stok = args['stok']
             qry.penerbit = args['penerbit']
-            qry.email = args['email']
+            qry.email_user = claim['email']
 
             db.session.commit()
             return marshal(qry, Books.response_fields), 200, {'Content-Type':'application/json'}
