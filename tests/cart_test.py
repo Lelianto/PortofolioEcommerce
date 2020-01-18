@@ -66,3 +66,4 @@ class TestCart():
         res = client.get('/cart/total', headers={'Authorization': 'Bearer ' + token})
 
         assert res.status_code == 200
+

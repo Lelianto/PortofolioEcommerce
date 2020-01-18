@@ -68,7 +68,7 @@ class TotalBiaya(Resource):
                 # Mengubah status cart menjadi 'sudah dibayar'
                 query.status_cart = True
                 db.session.commit()
-        print(Payment.query)
+
         qry = Payment.query[-1]
         biaya_ongkir = qry.ongkir
 

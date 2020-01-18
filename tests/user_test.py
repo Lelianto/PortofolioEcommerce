@@ -165,5 +165,14 @@ class TestUser():
 
         assert res.status_code == 200
 
-        
+    def test_get_user_by_id(self, client):
+        token = create_token(False)
+
+        data = {
+        }
+
+        res = client.get('/user/profile', json = data, headers={'Authorization': 'Bearer ' + token})
+        res_json = json.loads(res.data)
+
+        assert res.status_code == 200
 
