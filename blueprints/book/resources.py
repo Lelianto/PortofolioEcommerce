@@ -24,8 +24,8 @@ class BookResource(Resource):
         claim = get_jwt_claims()
 
         parser = reqparse.RequestParser()
-        parser.add_argument('p', location='json', default=1)
-        parser.add_argument('rp', location='json', default=25)
+        parser.add_argument('p',type=int, location='json', default=1)
+        parser.add_argument('rp', type=int, location='json', default=25)
         args = parser.parse_args()
 
         # Pagination batas hasil pengambilan
@@ -36,7 +36,7 @@ class BookResource(Resource):
         all_books = []
         for book in qry.limit(args['rp']).offset(offset):
             all_books.append(marshal(book,Books.response_fields))
-        return all_books, 200
+        return all_books, 200, {'Content-Type':'application/json'}
 
     # Menambah Buku di dalam database book
     @jwt_required
@@ -92,7 +92,7 @@ class BookList(Resource):
                 else:
                     # return {'status': 'NOT FOUND'}
                     return marshal(qry, Books.response_fields), 200
-        return {'status': 'NOT FOUND'}, 404
+        return {'status': 'NOT FOUND'}, 404, {'Content-Type':'application/json'}
 
     # Melakukan updating data buku sesuai ID oleh User
     @jwt_required
