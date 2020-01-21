@@ -72,7 +72,7 @@ class CartResource(Resource):
                 queries = Books.query
 
                 for query in queries:
-                    if int(query.id) == int(cart.book_id) and query.stok < cart.stok:
+                    if int(query.id) == int(cart.book_id) and query.stok < cart.stok and query.status == 'Ready Stock':
                         return {'message': 'stok buku tidak mencukupi'}
                 db.session.commit()
                 cart = marshal(cart, Cart.cart_fields)
@@ -145,7 +145,7 @@ class AddToCart(Resource):
         queries = Books.query
 
         for query in queries:
-            if int(query.id) == int(args['book_id']) and query.stok < 1:
+            if int(query.id) == int(args['book_id']) and query.stok < 1 and args['status_jual'] == 'Ready Stock':
                 return {'message': 'stok buku telah habis'}
 
         db.session.add(cart)
