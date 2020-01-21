@@ -17,7 +17,15 @@ class CreateTokenResource(Resource):
         return {'status':'ok'},200
 
     def post(self):
+        """
+        Parameter Input
+        _______________
 
+        email: string,
+            user atau admin menginput data email (sudah pasti unik)
+        kata_sandi: string,
+            user menginput kata sandi sesuai dengan input yang bersyarat pada bagian 
+        """
         # Untuk melakukan login dan pengecekan tipe akun 
         parser = reqparse.RequestParser()
         parser.add_argument('email', location='json', required=True)
