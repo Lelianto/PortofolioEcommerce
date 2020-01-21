@@ -111,5 +111,28 @@ class SemuaTransaksi(Resource):
             filter_result.append(marshal(query, PaymentConfirm.payment_confirm_fields))
         return filter_result
 
+class KodePemesanan(Resource):
+    def options(self, id=None):
+        return {'status':'ok'},200
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('p', location='args', default=1)
+        parser.add_argument('rp', location='args', default=25)
+        parser.add_argument('keyword', location='args', default='None')
+        args = parser.parse_args()
+
+        qry = PaymentConfirm.query
+        
+        # Search by judul or penulis
+        if qry:
+            print(qry)
+            search_result = qry.filter(PaymentConfirm.nomor_pemesanan.like('%' + args['keyword'] + '%') | PaymentConfirm.tanggal_pemesanan.like('%' + args['keyword'] + '%'))  
+            all_search = []
+            for result in search_result:
+                all_search.append(marshal(result, PaymentConfirm.payment_confirm_fields))
+            return all_search, 200
+        return {'status': 'NOT FOUND'}, 404
+
 api.add_resource(TotalBiaya, '/bill')
 api.add_resource(SemuaTransaksi, '/all')
+api.add_resource(KodePemesanan, '/code')

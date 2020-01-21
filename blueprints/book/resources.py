@@ -210,7 +210,7 @@ class BookSearch(Resource):
         
         # Search by judul or penulis
         if qry:
-            search_result = qry.filter(Books.judul.like('%' + args['keyword'] + '%') | Books.penulis.like('%' + args['keyword'] + '%'))  
+            search_result = qry.filter(Books.judul.like('%' + args['keyword'] + '%') | Books.penulis.like('%' + args['keyword'] + '%') | Books.status.like('%' + args['keyword'] + '%') | Books.genre.like('%' + args['keyword'] + '%'))  
             all_search = []
             for result in search_result:
                 all_search.append(marshal(result, Books.response_fields))
