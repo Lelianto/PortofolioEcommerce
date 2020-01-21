@@ -4,6 +4,7 @@ from flask_restful import Api, reqparse, Resource, marshal, inputs
 from datetime import datetime
 from sqlalchemy import desc
 from .model import Cart
+from blueprints.book.model import Books
 from blueprints import db, app
 from datetime import datetime
 import json
@@ -68,6 +69,11 @@ class CartResource(Resource):
                 args = parser.parse_args()
 
                 cart.stok = args['stok']
+                queries = Books.query
+
+                for query in queries:
+                    if int(query.id) == int(cart.book_id) and query.stok < cart.stok:
+                        return {'message': 'stok buku tidak mencukupi'}
                 db.session.commit()
                 cart = marshal(cart, Cart.cart_fields)
                 app.logger.debug('DEBUG : %s', cart)
@@ -135,7 +141,13 @@ class AddToCart(Resource):
         for query in qry:
             if claim['email'] == query.email and int(args['book_id']) == int(query.book_id) and query.status_cart is False:
                 return {'message':'buku sudah ada di dalam cart'}
-                
+        
+        queries = Books.query
+
+        for query in queries:
+            if int(query.id) == int(args['book_id']) and query.stok < 1:
+                return {'message': 'stok buku telah habis'}
+
         db.session.add(cart)
         db.session.commit()
         app.logger.debug('DEBUG : %s', cart)

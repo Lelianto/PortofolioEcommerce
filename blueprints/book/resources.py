@@ -24,8 +24,8 @@ class BookResource(Resource):
         claim = get_jwt_claims()
 
         parser = reqparse.RequestParser()
-        parser.add_argument('p',type=int, location='json', default=1)
-        parser.add_argument('rp', type=int, location='json', default=25)
+        parser.add_argument('p',type=int, location='args', default=1)
+        parser.add_argument('rp', type=int, location='args', default=25)
         args = parser.parse_args()
 
         # Pagination batas hasil pengambilan
