@@ -32,7 +32,7 @@ def internal_required(fn):
     return wrapper
 
 env = os.environ.get('FLASK_ENV', 'development')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:alta123456@porto.cmkstygvqumh.ap-southeast-1.rds.amazonaws.com:3306/porto_test' if (env == 'testing') else 'mysql+pymysql://root:@0.0.0.0:3306/porto'  
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:alta123456@porto.cmkstygvqumh.ap-southeast-1.rds.amazonaws.com:3306/porto_test' if (env == 'testing') else 'mysql+pymysql://root:alta123456@porto.cmkstygvqumh.ap-southeast-1.rds.amazonaws.com:3306/porto'  
   
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
