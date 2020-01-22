@@ -141,8 +141,7 @@ class BookList(Resource):
                 """
                 To access other people's books - Can only buy
                 """
-                else:
-                    return marshal(qry, Books.response_fields), 200, {'Content-Type':'application/json'}
+                return marshal(qry, Books.response_fields), 200, {'Content-Type':'application/json'}
         return {'status': 'NOT FOUND'}, 404, {'Content-Type':'application/json'}
 
     @jwt_required
