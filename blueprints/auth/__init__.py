@@ -24,7 +24,7 @@ class CreateTokenResource(Resource):
         email: string,
             user atau admin menginput data email (sudah pasti unik)
         kata_sandi: string,
-            user menginput kata sandi sesuai dengan input yang bersyarat pada bagian 
+            user menginput kata sandi sesuai dengan input yang bersyarat pada bagian kata sandi.
         """
         # Untuk melakukan login dan pengecekan tipe akun 
         parser = reqparse.RequestParser()
