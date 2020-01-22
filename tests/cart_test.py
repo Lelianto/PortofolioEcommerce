@@ -67,3 +67,10 @@ class TestCart():
 
         assert res.status_code == 200
 
+    def test_get_all_carts(self, client):
+        token = create_token(False)
+
+        res = client.get('/cart/allcart', headers={'Authorization': 'Bearer ' + token})
+
+        assert res.status_code == 200
+

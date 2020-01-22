@@ -36,3 +36,11 @@ class TestPaymentConfirm():
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
+    
+    def test_get_code_payment_confirm(self, client):
+        token = create_token(False)
+
+        res = client.get('/payment_confirm/code?keyword=A',  headers={'Authorization': 'Bearer ' + token})
+        res_json = json.loads(res.data)
+
+        assert res.status_code == 200
