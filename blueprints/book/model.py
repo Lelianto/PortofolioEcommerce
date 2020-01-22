@@ -1,10 +1,10 @@
 from datetime import datetime 
 from blueprints import db 
 from flask_restful import fields
-# Import tabel User untuk mengambil id user sebagai foreign key
+# Import the User table to retrieve the user id as a foreign key
 from blueprints.user.model import User
 
-# Membuat Model tabel Buku dengan nama 'book' 
+# Creating a Book table model with the name 'book'
 class Books(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

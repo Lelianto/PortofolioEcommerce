@@ -20,25 +20,41 @@ import requests
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints import internal_required
 
-# Untuk melakukan enkripsi
+# To encrypt
 from password_strength import PasswordPolicy
 import hashlib
 
-# Membuat blueprint
+# Create blueprint
 bp_payment_confirm = Blueprint('payment_confirm', __name__)
 api = Api(bp_payment_confirm)
 
 class TotalBiaya(Resource):
+    """
+    'self' is a variable that represents a function in a class so that the function can be reused in the same class.
+    """
     def options(self, id=None):
+        """
+        To control errors caused by CORS
+        """
         return {'status':'ok'},200
 
     MAILJET_API_KEY = '65c4b0e54802eadb7ff21baa5058ddfa'
     MAILJET_SECRET_KEY = 'c8f9b62ee7246a4278c5a896a2e9c0fd'
     MAILJET_SEND_API = 'https://api.mailjet.com/v3/send'
 
-    # Triger menekan tombol 'Bayar Sekarang' untuk menuju halaman terakhir
     @jwt_required
     def post(self):
+        """
+        Method: GET
+        To input a transaction data into the database
+        ______________
+        
+        Parameter Input
+        _______________
+
+        Cart: query of carts,
+            Cart are objects that exist in the cart table.
+        """
         qry = Cart.query.all()
         book_qry = Books.query.all()
         list_barang = []
@@ -46,7 +62,7 @@ class TotalBiaya(Resource):
         for query in qry:
             if claim['email'] == query.email and query.status_cart is False:
                 list_barang.append(query)
-        # Mengambil kode pemesanan dari ID cart terakhir yang aktif
+        # Retrieve the order code from the last active cart ID
         kode_pemesanan = hashlib.md5(str(qry[-1].id).encode()).hexdigest()[-10:].upper()
 
         email = ''
@@ -65,7 +81,7 @@ class TotalBiaya(Resource):
                             db.session.commit()
                 email = query.email
                 emailuser = query.email
-                # Mengubah status cart menjadi 'sudah dibayar'
+                # Change the cart status to 'paid'
                 query.status_cart = True
                 db.session.commit()
 
@@ -74,7 +90,7 @@ class TotalBiaya(Resource):
 
         total_biaya_user = total_harga + biaya_ongkir
 
-        # Mengirim email berisi resi pembayaran ke email user
+        # Send an email containing the payment receipt to the user's email
         mailjet = Client(auth=(self.MAILJET_API_KEY, self.MAILJET_SECRET_KEY), version='v3')
         data = {
                 'FromEmail': "lian@alterra.id",
@@ -101,10 +117,28 @@ class TotalBiaya(Resource):
         return marshal(payment_confirm, PaymentConfirm.payment_confirm_fields), 200, {'Content-Type' : 'application/json'}
 
 class SemuaTransaksi(Resource):
+    """
+    'self' is a variable that represents a function in a class so that the function can be reused in the same class.
+    """
     def options(self, id=None):
+        """
+        To control errors caused by CORS
+        """
         return {'status':'ok'},200
     @jwt_required
     def get(self):
+        """
+        Method: GET
+        To retrieve all existing transaction data.
+        ______________
+        
+        Parameter Input
+        _______________
+
+        PaymentConfirm: query of payment confirmations,
+            PaymentConfirm are objects that exist in the payment confirmation   
+            table.
+        """
         qry = PaymentConfirm.query.all()
         filter_result = []
         for query in qry:
@@ -112,9 +146,33 @@ class SemuaTransaksi(Resource):
         return filter_result
 
 class KodePemesanan(Resource):
+    """
+    'self' is a variable that represents a function in a class so that the function can be reused in the same class.
+    """
     def options(self, id=None):
+        """
+        To control errors caused by CORS
+        """
         return {'status':'ok'},200
     def get(self):
+        """
+        Method: GET
+        Order Number and Order Date Search
+        ______________
+        
+        Parameter Input
+        _______________
+
+        p: integer (not required),
+            p is the index number of the page that the user wants to display.
+        rp: integer (not required),
+            rp is the number of outputs that will be displayed on one page.
+        PaymentConfirm: query of payment confirmations,
+            PaymentConfirm are objects that exist in the payment confirmation   
+            table.
+        keyword: string (not required),
+            A keyword is a group of characters entered by a user. Search by order number or order date
+        """
         parser = reqparse.RequestParser()
         parser.add_argument('p', location='args', default=1)
         parser.add_argument('rp', location='args', default=25)
@@ -123,9 +181,8 @@ class KodePemesanan(Resource):
 
         qry = PaymentConfirm.query
         
-        # Search by judul or penulis
+        # Search by order number or order date
         if qry:
-            print(qry)
             search_result = qry.filter(PaymentConfirm.nomor_pemesanan.like('%' + args['keyword'] + '%') | PaymentConfirm.tanggal_pemesanan.like('%' + args['keyword'] + '%'))  
             all_search = []
             for result in search_result:
