@@ -18,6 +18,9 @@ class CreateTokenResource(Resource):
 
     def post(self):
         """
+        Method: POST
+        ______________
+        
         Parameter Input
         _______________
 
