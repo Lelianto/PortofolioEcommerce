@@ -134,7 +134,7 @@ class SemuaTransaksi(Resource):
         
         Parameter Input
         _______________
-
+        
         PaymentConfirm: query of payment confirmations,
             PaymentConfirm are objects that exist in the payment confirmation   
             table.
