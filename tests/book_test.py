@@ -150,9 +150,9 @@ class TestBook():
         data = {
             "judul":"Belajar Apapun Selain Hidup",
             "penulis": "Penguasa",
-            "jumlah_halaman": "257",
+            "jumlah_halaman": 257,
             "tanggal_terbit":"01/2017",
-            "isbn": "182319191123418481238418",
+            "isbn": "18231384180959844877575",
             "genre": "Romantis",
             "bahasa":"Indonesia",
             "berat":0.245,

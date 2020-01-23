@@ -2,6 +2,8 @@ import pytest, json, logging
 from flask import Flask, request
 
 from blueprints import app, db
+from blueprints.book.model import Books
+from blueprints.cart.model import Cart
 from blueprints.user.model import User
 from app import cache
 
