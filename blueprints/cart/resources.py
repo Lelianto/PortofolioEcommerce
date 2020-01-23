@@ -213,7 +213,8 @@ class AddToCart(Resource):
 
         status_cart: boolean (default: false),
         book_id, judul, penulis, jenis_cover, foto_buku, status_jual: string (required),
-        harga, stok, berat: integer (required),
+        harga, stok: integer (required),
+        berat: float (required)
         Cart: query of carts,
              Cart are objects that exist in the cart table.
         """

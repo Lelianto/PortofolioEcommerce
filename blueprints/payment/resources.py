@@ -33,7 +33,7 @@ class Expedition(Resource):
         """
         return {'status':'ok'},200
 
-    RAJAONGKIR_API_KEY = 'c34f8ffa7ae33fa06c280cf1a0a01589'
+    RAJAONGKIR_API_KEY = 'aa800702caf29511eef16720dacf1358'
     RAJAONGKIR_COST_API = 'https://api.rajaongkir.com/starter/cost'
     RAJAONGKIR_CITY_API = 'https://api.rajaongkir.com/starter/city'
     DEFAULT_COURIER = 'jne'
