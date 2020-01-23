@@ -109,8 +109,8 @@ class Expedition(Resource):
         # The sender's address is set default from Malang
         ongkir_user = self.GetBiayaPengiriman('Malang', destinasi, berat_gram)
 
-        payment = Payment(args['cart_id'],args['nama_jalan'], args['rt_rw'], args['kelurahan'], args['kecamatan'], destinasi, args['provinsi'], args['kode_pos'], args['nomor_telepon'], ongkir_user)
-       
+        payment = Payment(args['cart_id'],args['nama_jalan'], args['rt_rw'], args['kelurahan'], args['kecamatan'], destinasi, args['provinsi'], args['kode_pos'], args['nomor_telepon'], ongkir_user )
+
         db.session.add(payment)
         db.session.commit()
 
