@@ -107,7 +107,7 @@ class Expedition(Resource):
         berat_gram = berat_kg*1000
         
         # The sender's address is set default from Malang
-        ongkir_user = self.GetBiayaPengiriman('Malang', destinasi, berat_gram)
+        ongkir_user = self.GetBiayaPengiriman('Malang', 'Medan', 200)
 
         payment = Payment(args['cart_id'],args['nama_jalan'], args['rt_rw'], args['kelurahan'], args['kecamatan'], destinasi, args['provinsi'], args['kode_pos'], args['nomor_telepon'], ongkir_user )
 
