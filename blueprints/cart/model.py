@@ -32,7 +32,7 @@ class Cart(db.Model):
         'foto_buku' : fields.String,
         'harga' : fields.Integer,
         'stok' : fields.Integer,
-        'berat' : fields.Integer,
+        'berat' : fields.Float,
         'status_jual' : fields.String,
         'email' : fields.String
     }
