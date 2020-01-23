@@ -69,8 +69,6 @@ class Expedition(Resource):
         result = req.json()
 
         ongkir = result['rajaongkir']['results'][0]['costs'][0]['cost'][0]['value']
-        print(req)
-        print(result['rajaongkir'])
         return ongkir
 
     @jwt_required
@@ -107,13 +105,12 @@ class Expedition(Resource):
                 total = berat_kg + query.berat*query.stok
                 berat_kg = total
         berat_gram = berat_kg*1000
-        print(berat_gram)
+        
         # The sender's address is set default from Malang
         ongkir_user = self.GetBiayaPengiriman('Malang', destinasi, berat_gram)
 
         payment = Payment(args['cart_id'],args['nama_jalan'], args['rt_rw'], args['kelurahan'], args['kecamatan'], destinasi, args['provinsi'], args['kode_pos'], args['nomor_telepon'], ongkir_user)
-        print(ongkir_user)
-        print(payment)
+       
         db.session.add(payment)
         db.session.commit()
 
