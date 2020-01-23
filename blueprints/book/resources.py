@@ -80,7 +80,7 @@ class BookResource(Resource):
         parser.add_argument('isbn', location='json', help='isbn invalid',default='none', required=True)
         parser.add_argument('genre', location='json', help='genre invalid', default='none', required=True)
         parser.add_argument('bahasa', location='json', help='bahasa invalid', default='none', required=True)
-        parser.add_argument('berat', type=float, location='json', help='berat invalid',default=0)
+        parser.add_argument('berat', type=float, location='json', help='berat invalid',default=1)
         parser.add_argument('lebar', type=float, location='json', help='lebar invalid', default=0)
         parser.add_argument('panjang', type=float, location='json', help='panjang invalid', default=0)
         parser.add_argument('jenis_cover', location='json', help='jenis cover invalid',default='Soft Cover', required=True)
