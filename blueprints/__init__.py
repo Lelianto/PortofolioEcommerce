@@ -93,6 +93,3 @@ from blueprints.payment_confirm.resources import bp_payment_confirm
 app.register_blueprint(bp_payment_confirm, url_prefix = '/payment_confirm')
 
 # db.create_all()
-
-
-
