@@ -55,6 +55,10 @@ class TotalBiaya(Resource):
         Cart: query of carts,
             Cart are objects that exist in the cart table.
         """
+        parser = reqparse.RequestParser()
+        parser.add_argument('total_biaya', type=int, location='json', required=True, default = 0)
+        args = parser.parse_args()
+        
         qry = Cart.query.all()
         book_qry = Books.query.all()
         list_barang = []
@@ -88,7 +92,7 @@ class TotalBiaya(Resource):
         qry = Payment.query[-1]
         biaya_ongkir = qry.ongkir
 
-        total_biaya_user = total_harga + biaya_ongkir
+        total_biaya_user = args['total_biaya']
 
         # Send an email containing the payment receipt to the user's email
         mailjet = Client(auth=(self.MAILJET_API_KEY, self.MAILJET_SECRET_KEY), version='v3')
