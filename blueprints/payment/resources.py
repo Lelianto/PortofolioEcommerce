@@ -97,12 +97,12 @@ class Expedition(Resource):
         args = parser.parse_args()
 
         destinasi = args['kota_kabupaten']
-
+        claim = get_jwt_claims()
         qry = Cart.query.all()
         print(qry)
         berat_kg = 0
         for query in qry:
-            if query.status_cart == 1:
+            if query.status_cart == 0 and claim['email'] == query.email:
                 total = berat_kg + query.berat*query.stok
                 berat_kg = total
         berat_gram = berat_kg*1000
